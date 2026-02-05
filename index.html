@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Delivery Dashboard</title>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+<body style="font-family: Arial; padding:20px">
+
+<h2>Delivery Dashboard</h2>
+
+<table border="1" cellpadding="8">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Farmer</th>
+      <th>Department</th>
+      <th>Net Weight</th>
+      <th>Sugar %</th>
+    </tr>
+  </thead>
+  <tbody id="data"></tbody>
+</table>
+
+<script>
+  const supabaseUrl = 'https://geqnjkkztgpvkobmmdhi.supabase.co'
+  const supabaseKey = 'sb_publishable_209O2YA7JfbXcJ-FFqvLFQ_kYZpEunc'
+  const supabase = supabase.createClient(supabaseUrl, supabaseKey)
+
+  async function loadData() {
+    const { data, error } = await supabase
+      .from('deliveries')
+      .select('*')
+      .order('delivery_date', { ascending: false })
+
+    if (error) {
+      console.error(error)
+      return
+    }
+
+    const tbody = document.getElementById('data')
+    tbody.innerHTML = ''
+
+    data.forEach(row => {
+      const tr = document.createElement('tr')
+      tr.innerHTML = `
+        <td>${row.delivery_date}</td>
+        <td>${row.farmer_name}</td>
+        <td>${row.department}</td>
+        <td>${row.net_weight}</td>
+        <td>${row.sugar_percentage}</td>
+      `
+      tbody.appendChild(tr)
+    })
+  }
+
+  loadData()
+</script>
+
+</body>
+</html>
