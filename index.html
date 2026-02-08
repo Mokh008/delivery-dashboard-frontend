@@ -5,6 +5,7 @@
   <title>Delivery Dashboard</title>
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
+
 <body style="font-family: Arial; padding:20px">
 
 <h2>Delivery Dashboard</h2>
@@ -23,18 +24,27 @@
 </table>
 
 <script>
-  const supabaseUrl = 'https://geqnjkkztgpvkobmmdhi.supabase.co'
-  const supabaseKey = 'sb_publishable_209O2YA7JfbXcJ-FFqvLFQ_kYZpEunc'
-  const supabase = supabase.createClient(supabaseUrl, supabaseKey)
+  // بيانات Supabase
+  const SUPABASE_URL = 'https://geqnjkkztgpvkobmmdhi.supabase.co'
+  const SUPABASE_KEY = 'sb_publishable_209O2YA7JfbXcJ-FFqvLFQ_kYZpEunc'
+
+  // إنشاء client باسم مختلف (مهم)
+  const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  )
 
   async function loadData() {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('deliveries')
       .select('*')
       .order('delivery_date', { ascending: false })
 
+    console.log('DATA:', data)
+    console.log('ERROR:', error)
+
     if (error) {
-      console.error(error)
+      alert(error.message)
       return
     }
 
