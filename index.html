@@ -2,22 +2,23 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>Delivery Dashboard</title>
+  <title>Factory Daily Summary</title>
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
 
 <body style="font-family: Arial; padding:20px">
 
-<h2>Delivery Dashboard</h2>
+<h2>Factory Daily Summary (8AM Shift)</h2>
 
 <table border="1" cellpadding="8">
   <thead>
     <tr>
-      <th>Date</th>
-      <th>Farmer</th>
-      <th>Department</th>
-      <th>Net Weight</th>
-      <th>Sugar %</th>
+      <th>Shift Date</th>
+      <th>Trucks Count</th>
+      <th>Total Beet Weight</th>
+      <th>Total Net Weight</th>
+      <th>Weighted Sugar %</th>
+      <th>Weighted Tare %</th>
     </tr>
   </thead>
   <tbody id="data"></tbody>
@@ -28,17 +29,17 @@
   const SUPABASE_URL = 'https://geqnjkkztgpvkobmmdhi.supabase.co'
   const SUPABASE_KEY = 'sb_publishable_209O2YA7JfbXcJ-FFqvLFQ_kYZpEunc'
 
-  // إنشاء client باسم مختلف (مهم)
   const supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_KEY
   )
 
   async function loadData() {
+
     const { data, error } = await supabaseClient
-      .from('deliveries')
+      .from('deliveries_summary')
       .select('*')
-      .order('delivery_date', { ascending: false })
+      .order('shift_date_unloading', { ascending: true })
 
     console.log('DATA:', data)
     console.log('ERROR:', error)
@@ -54,11 +55,12 @@
     data.forEach(row => {
       const tr = document.createElement('tr')
       tr.innerHTML = `
-        <td>${row.delivery_date}</td>
-        <td>${row.farmer_name}</td>
-        <td>${row.department}</td>
-        <td>${row.net_weight}</td>
-        <td>${row.sugar_percentage}</td>
+        <td>${row.shift_date_unloading}</td>
+        <td>${row.trucks_count}</td>
+        <td>${Number(row.total_beet_weight).toFixed(2)}</td>
+        <td>${Number(row.total_net_weight).toFixed(2)}</td>
+        <td>${Number(row.weighted_sugar_percent).toFixed(2)}</td>
+        <td>${Number(row.weighted_tare_percent).toFixed(2)}</td>
       `
       tbody.appendChild(tr)
     })
